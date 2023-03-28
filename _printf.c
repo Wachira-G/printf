@@ -41,6 +41,7 @@ int _printf(const char *format, ...)
 					count++;
 					k++;
 					break;
+/*
 				case 'd':
 				case 'i':
 					i = va_arg(args, int);
@@ -53,7 +54,8 @@ int _printf(const char *format, ...)
 					count += nums(i);
 					k++;
 					break;
-				default:
+*/
+					default:
 					break;
 			}
 		}
