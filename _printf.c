@@ -59,6 +59,8 @@ int print_argument(char specifier, va_list args)
 		case '%':
 			write(1, "%", 1);
 			return (1);
+		case 'b':
+			return (print_binary(args));
 		default:
 			return (0);
 	}
