@@ -1,71 +1,119 @@
-#include <stdarg.h>
+#include <stdio.h>
+#include <stddef.h>
+#include <string.h>
 #include "main.h"
 
 /**
- * _printf - a function that prints output
- * @format: is the first argument
- * Return: returns output
+ * _printf - printf clone
+ * @format: format specifier
+ *
+ * Return: number of characters printed
  */
 
 int _printf(const char *format, ...)
 {
-	int count = 0, i = 0, k = 0;
 	va_list args;
-	char *s;
+	int i;
+	int count = 0;
+
+	if (format == NULL)
+		return (-1);
 
 	va_start(args, format);
-	while (format[k] != '\0')
+	for (i = 0; format[i] != '\0'; i++)
 	{
-		if (format[k] == '%')
+		if (format[i] == '%')
 		{
-			k++;
-			switch (format[k])
-			{
-				case 'c':
-					_putchar(va_arg(args, int));
-					count++;
-					k++;
-					break;
-				case's':
-					s = va_arg(args, char *);
-					while (s[i] != '\0')
-					{
-						_putchar(s[i]);
-						count++;
-						i++;
-					}
-					k++;
-					break;
-				case '%':
-					_putchar('%');
-					count++;
-					k++;
-					break;
-/*
-				case 'd':
-				case 'i':
-					i = va_arg(args, int);
-					if (i < 0)
-					{
-						_putchar('-');
-						count++;
-						i = -1;
-					}
-					count += nums(i);
-					k++;
-					break;
-*/
-					default:
-					break;
-			}
+			format++;
+			count += print_argument(format[i], args);
 		}
 		else
 		{
-		count += ord(format[k]);
-		k++;
+			write(1, &format[i], 1);
+			count++;
 		}
-
 	}
 	va_end(args);
 	return (count);
+}
+
+/**
+ * print_argument - prints the argument according to the format specifier
+ * @specifier: format specifier
+ * @args: arguments list
+ *
+ * Return: number of characters printed
+ */
+
+int print_argument(char specifier, va_list args)
+{
+	switch (specifier)
+	{
+		case 'c':
+			return (print_char(args));
+		case 's':
+			return (print_string(args));
+		case 'd':
+		case 'i':
+			return (print_int(args));
+		case '%':
+			write(1, "%", 1);
+			return (1);
+		default:
+			return (0);
+	}
+}
+
+/**
+ * print_char - prints a character
+ * @args: arguments list
+ *
+ * Return: number of characters printed
+ */
+
+int print_char(va_list args)
+{
+	char c = va_arg(args, int);
+
+	write(1, &c, 1);
+	return (1);
+}
+
+
+/**
+ * print_int - prints an integer
+ * @args: arguments list
+ *
+ * Return: number of characters printed
+ */
+
+int print_int(va_list args)
+{
+	int num = va_arg(args, int);
+	char str[20];
+
+	sprintf(str, "%d", num);
+	write(1, str, strlen(str));
+	return (strlen(str));
+}
+
+/**
+ * print_string - prints a string
+ * @args: arguments list
+ *
+ * Return: number of characters printed
+ */
+
+int print_string(va_list args)
+{
+	char *s = va_arg(args, char *);
+
+	if (s == NULL)
+	{
+		write(1, "(null)", 6);
+		return (6);
+	}
+
+	write(1, s, strlen(s));
+	return (strlen(s));
 }
